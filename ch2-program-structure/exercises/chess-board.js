@@ -1,6 +1,8 @@
 "use strict";
 
-let matrix = function (symbol, size) {
+console.log(matrix('#', 8));
+
+function matrix(symbol, size) {
 
     var matrix = '';
     for (var i = 1, j = 1; i <= size; j++) {
@@ -12,6 +14,4 @@ let matrix = function (symbol, size) {
     }
 
     return matrix;
-};
-
-console.log(matrix('#', 8));
+}
