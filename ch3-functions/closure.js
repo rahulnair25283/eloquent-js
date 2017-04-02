@@ -26,3 +26,16 @@ var thrice = multiplier(3);
 
 console.log(twice(5));
 console.log(thrice(5));
+
+// 3
+function say(greeting) {
+    return function(name) {
+        return greeting + " " + name + "!";
+    };
+}
+
+var greet = say("Hello");
+console.log(greet("Rahul"));
+
+greet = say("Hi Cutie");
+console.log(greet("Aadee"));
