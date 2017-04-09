@@ -1,24 +1,17 @@
 'use strict';
 
 var JOURNAL = require('./data.js');
-
-var journal = [];
-
-const addEntry = (events, didITurnIntoASquirrel) => {
-    journal.push({
-        events: events,
-        squirrel: didITurnIntoASquirrel
-    });
-};
+var phis = {};
 
 const phiCoefficient = table => (table[3] * table[0] - table[2] * table[1]) / Math.sqrt((table[2] + table[3]) * (table[0] + table[1]) * (table[1] + table[3]) * (table[0] + table[2]));
-console.log(phiCoefficient([76, 9, 4, 1]));
+
+const hasEvent = entry => event => entry.events.find(e =>  e === event);
 
 const tableFor = event => {
     var table = [0, 0, 0, 0];
-    for (var i =0; i < JOURNAL.length; i++) {
+    for (var i = 0; i < JOURNAL.length; i++) {
         var entry = JOURNAL[i], index = 0;
-        if (hasEvent(event, entry)) {
+        if (hasEvent(entry)(event)) {
             index += 1;
         }
         if (entry.squirrel) {
@@ -29,12 +22,36 @@ const tableFor = event => {
     return table;
 };
 
-const hasEvent = (event, entry) => {
-    return entry.events.indexOf(event) !== -1;
+const storePhi = (phi, event) => {
+    phis[event] = phi;
 };
 
-console.log(tableFor('pizza'));
+const gatherCorrelations = JOURNAL => {
+    for (var entry = 0; entry < JOURNAL.length; entry++) {
+        var events = JOURNAL[entry].events;
+        for (var i = 0; i < events.length; i++) {
+            var event = events[i];
+            if (! (event in phis)) {
+                storePhi(phiCoefficient(tableFor(event)), event);
+            }
+        }
+    }
+};
 
-addEntry(['work', 'touched tree', 'pizza', 'running', 'tv'], false);
-addEntry(['work', 'ice cream', 'cauliflower', 'lasagna', 'touched tree', 'brushed teeth'], false);
-addEntry(['weekend', 'cycling', 'break', 'peanuts', 'beer'], true);
+gatherCorrelations(JOURNAL);
+
+for (var event in phis) {
+    var correlation = phis[event];
+    if (correlation > 0.1 || correlation < -0.1) {
+        console.log(event + ': ' + phis[event]);
+    }
+}
+
+for (var i = 0; i < JOURNAL.length; i++) {
+    var entry = JOURNAL[i];
+    if (hasEvent(entry)('peanuts') && !hasEvent(entry)('brushed teeth')) {
+        entry.events.push('peanut teeth');
+    }
+}
+
+console.log('peanut teeth: ', phiCoefficient(tableFor('peanut teeth')));
