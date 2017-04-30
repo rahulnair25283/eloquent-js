@@ -17,7 +17,7 @@ let passed = filter(ancestory, function(person) {
     return person.born > 1900 && person.born < 1925;
 })
 
-console.log(passed.length);
+console.log(passed);
 
 const map = (arr, transform) => {
     let mapped = [];
@@ -36,3 +36,12 @@ var namesOfPersonOverNinety = map(overNinety, function(person) {
 });
 
 console.log(namesOfPersonOverNinety);
+
+let oldestAncestor = ancestory.reduce((min, current) => {
+    if (current.born < min.born) {
+        return current;
+    }
+    return min;
+});
+
+console.log(oldestAncestor);
